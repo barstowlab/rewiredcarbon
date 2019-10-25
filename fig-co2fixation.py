@@ -1,3 +1,5 @@
+#!/opt/local/bin/python3.7
+
 # ------------------------------------------------------------------------------------------------ #
 # fig-co2fixation.py
 # Calculates area and thickness of thin film in hydrogen-transport by diffusion scenario
