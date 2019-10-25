@@ -105,3 +105,4 @@ venv.bak/
 
 # Apple Files
 *.numbers
+*.DS_Store
