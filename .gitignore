@@ -106,3 +106,6 @@ venv.bak/
 # Apple Files
 *.numbers
 *.DS_Store
+
+# Git specific directories
+output/
