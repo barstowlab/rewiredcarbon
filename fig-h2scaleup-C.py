@@ -38,11 +38,11 @@ overridePlotScalesInScenarioFile=True, yScale='Logarithmic', xScale='Logarithmic
 
 
 Export_Efficiency_Scattergraphs(outputFileDirname, 'hydFilmThickness', efficienciesDict, \
-'hydFilmThickness', keysToPlot=None)
+'hydFilmThickness', keysToPlot=None, addKeyToHeader=True)
 
 
 Export_Efficiency_Scattergraphs(outputFileDirname, 'hydFilmArea', efficienciesDict, \
-'hydFilmArea', keysToPlot=None)
+'hydFilmArea', keysToPlot=None, addKeyToHeader=True)
 
 Export_Efficiency_Scattergraphs(outputFileDirname, 'effTotalElectricalToFuel', efficienciesDict, \
-'effTotalElectricalToFuel', keysToPlot=None)
+'effTotalElectricalToFuel', keysToPlot=None, addKeyToHeader=True)
