@@ -15,7 +15,6 @@ Export_Efficiency_Bargraph
 
 from rewiredcarbon.utils import ensure_dir
 
-import os
 
 
 
