@@ -13,7 +13,7 @@ solarConstant = 1000
 
 outputFileDirname = 'output/sfig-h2scaleup-B/'
 
-scenarioTableFileName = 'input/Scenario Tables/sfig-h2scaleup-B.csv'
+scenarioTableFileName = 'input/sfig-h2scaleup-B.csv'
 
 scenarioDict = ImportScenarioTable(scenarioTableFileName)
 

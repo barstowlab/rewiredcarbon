@@ -1,10 +1,11 @@
 from rewiredcarbon.scenario import ImportScenarioTable, CalculateScenarioEfficiencies, \
 Plot_Efficiency_Scattergraphs, Export_Efficiency_Scattergraphs
 
-scenarioTableFileName = 'input/Scenario Tables/sfig-vMtr-quinone-B.csv'
-outputFileDirname = 'output/sfig-vMtr-quinone'
+scenarioTableFileName = 'input/sfig-vMtr-quinone-B.csv'
+outputFileDirname = 'output/sfig-vMtr-quinone/'
 outputFilePrefix = 'sfig-vMtr-quinone-B'
 
+ensure_dir(outputFileDirname)
 
 
 scenarioDict = ImportScenarioTable(scenarioTableFileName)

@@ -6,7 +6,7 @@ from rewiredcarbon.utils import ensure_dir
 import os
 
 
-scenarioTableFileName = 'input/Scenario Tables/Scenario Table Transmembrane Voltage.csv'
+scenarioTableFileName = 'input/Scenario Table/Scenario Table Transmembrane Voltage.csv'
 
 scenarioDict = ImportScenarioTable(scenarioTableFileName)
 

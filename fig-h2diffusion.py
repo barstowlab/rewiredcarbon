@@ -14,11 +14,11 @@ Plot_Efficiency_Scattergraphs, Export_Efficiency_Scattergraphs
 
 from rewiredcarbon.utils import ensure_dir
 
-outputFileDirname = 'output/fig-h2scaleup/fig-h2scaleup-C/'
+outputFileDirname = 'output/fig-h2diffusion/'
 ensure_dir(outputFileDirname)
 
 
-scenarioTableFileName = 'input/fig-h2scaleup-C.csv'
+scenarioTableFileName = 'input/fig-h2diffusion.csv'
 
 scenarioDict = ImportScenarioTable(scenarioTableFileName)
 

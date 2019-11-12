@@ -181,6 +181,7 @@ for targetEfficiencyRatio in targetEfficiencyRatios:
 	collectedOutputDict[str(targetEfficiencyRatio)] = deepcopy(outputDict)
 
 
+# ------------------------------------------------------------------------------------------------ #
 # Plot out the system footprint and biofilm thickness data for different target efficiency ratios
 
 
@@ -189,12 +190,13 @@ keys = collectedOutputDict.keys()
 vectorList = []
 headerList = []
 
-
+# ------------------------------------------------------------------------------------------------ #
 # Plot out conductivity versus biofilm area
 figure()
 for key in keys:
 	outputDict = collectedOutputDict[key]
-	conductivityArray = outputDict['conductivityArray']
+	# Convert to S cm^-1 from S m^-1 
+	conductivityArray = array(outputDict['conductivityArray']) / 100 
 	areaBiofilmAtTargetEfficiencyRatioArray = outputDict['areaBiofilmAtTargetEfficiencyRatioArray']
 	areaBiofilmRelativeToSolarPVAreaArray = outputDict['areaBiofilmRelativeToSolarPVAreaArray']
 		
@@ -207,17 +209,20 @@ for key in keys:
 	vectorList.append(areaBiofilmAtTargetEfficiencyRatioArray)
 	vectorList.append(areaBiofilmRelativeToSolarPVAreaArray)
 	
-xlabel('Biofilm Conductivity (S m^{-1})')
+xlabel('Biofilm Conductivity (S cm^{-1})')
 ylabel('Biofilm Area (m^2)')
 grid()
 legend()
+# ------------------------------------------------------------------------------------------------ #
 
 
+# ------------------------------------------------------------------------------------------------ #
 # Plot out resistivity versus biofilm area
 figure()
 for key in keys:
 	outputDict = collectedOutputDict[key]
-	inputResistivityArray = outputDict['inputResistivityArray']
+	# Convert from Ω m to Ω cm
+	inputResistivityArray = array(outputDict['inputResistivityArray']) * 100 
 	areaBiofilmAtTargetEfficiencyRatioArray = outputDict['areaBiofilmAtTargetEfficiencyRatioArray']
 	areaBiofilmRelativeToSolarPVAreaArray = outputDict['areaBiofilmRelativeToSolarPVAreaArray']
 		
@@ -227,58 +232,59 @@ for key in keys:
 	vectorList.append(inputResistivityArray)
 	
 
-xlabel('Biofilm Resistivity (Ohm m)')
+xlabel('Biofilm Resistivity (Ohm cm)')
 ylabel('Biofilm Area (m^2)')
 grid()
 legend()
+# ------------------------------------------------------------------------------------------------ #
 
 
+# ------------------------------------------------------------------------------------------------ #
 # Plot out conductivity versus biofilm thickness
 figure()
 for key in keys:
 	outputDict = collectedOutputDict[key]
-	conductivityArray = outputDict['conductivityArray']
+	# Convert to S cm^-1 from S m^-1 
+	conductivityArray = array(outputDict['conductivityArray']) / 100
 		
 	biofilmThicknessAtTargetEfficiencyRatioArray \
 	= outputDict['biofilmThicknessAtTargetEfficiencyRatioArray']
 	
-	loglog(inputResistivityArray, biofilmThicknessAtTargetEfficiencyRatioArray, label=key)
+	loglog(conductivityArray, biofilmThicknessAtTargetEfficiencyRatioArray, label=key)
 	
 	headerList.append('biofilmThicknessAtTargetEfficiencyRatioArray_' + key)
 	vectorList.append(biofilmThicknessAtTargetEfficiencyRatioArray)
 	
-xlabel('Biofilm Resistivity (Ohm m)')
+xlabel('Biofilm Conductivity (S cm^{-1})')
 ylabel('Biofilm Thickness (m)')
 grid()
 legend()
+# ------------------------------------------------------------------------------------------------ #
 
 
-# Plot out conductivity versus biofilm thickness
+# ------------------------------------------------------------------------------------------------ #
+# Plot out resistivity versus biofilm thickness
 figure()
 for key in keys:
 	outputDict = collectedOutputDict[key]
-	
-	conductivityArray = outputDict['conductivityArray']
+	# Convert from Ω m to Ω cm
+	inputResistivityArray = array(outputDict['inputResistivityArray']) * 100
 	areaBiofilmAtTargetEfficiencyRatioArray = outputDict['areaBiofilmAtTargetEfficiencyRatioArray']
 	areaBiofilmRelativeToSolarPVAreaArray = outputDict['areaBiofilmRelativeToSolarPVAreaArray']
 	
 	biofilmThicknessAtTargetEfficiencyRatioArray \
 	= outputDict['biofilmThicknessAtTargetEfficiencyRatioArray']
 	
-	loglog(conductivityArray, biofilmThicknessAtTargetEfficiencyRatioArray, label=key)
+	loglog(inputResistivityArray, biofilmThicknessAtTargetEfficiencyRatioArray, label=key)
 	
 	
-xlabel('Biofilm Conductivity (S m^-1)')
+xlabel('Biofilm Resistivity (Ohm cm)')
 ylabel('Biofilm Thickness (m)')
 grid()
 legend()
-
+# ------------------------------------------------------------------------------------------------ #
 
 
 oMatrix = generateOutputMatrixWithHeaders(vectorList, headerList, delimeter=',')
-
 writeOutputMatrix(outputFilename, oMatrix)
-
-
-
 show()

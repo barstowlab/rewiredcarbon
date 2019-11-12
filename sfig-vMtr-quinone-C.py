@@ -7,11 +7,11 @@ from rewiredcarbon.utils import ensure_dir
 from copy import deepcopy
 
 
-scenarioTableFileName = 'input/Scenario Tables/sfig-vMtr-quinone-A-and-C.csv'
-outputFileDirname = 'output/sfig-vMtr-quinone'
+scenarioTableFileName = 'input/sfig-vMtr-quinone-A-and-C.csv'
+outputFileDirname = 'output/sfig-vMtr-quinone/'
 outputFilePrefix = 'sfig-vMtr-quinone-C'
 
-
+ensure_dir(outputFileDirname)
 
 scenarioDict = ImportScenarioTable(scenarioTableFileName)
 

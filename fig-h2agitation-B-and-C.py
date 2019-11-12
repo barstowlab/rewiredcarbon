@@ -1,7 +1,7 @@
 #!/opt/local/bin/python3.7
 
 # ------------------------------------------------------------------------------------------------ #
-# fig-h2scaleup-D-and-E.py
+# fig-h2agitation-B-and-C.py
 # Calculates stirring power and tank size for hydrogen-transport by agitation
 # 
 # Farshid Salimijazi and Buz Barstow
@@ -14,11 +14,11 @@ Plot_Efficiency_Scattergraphs, Export_Efficiency_Scattergraphs
 
 from rewiredcarbon.utils import ensure_dir
 
-outputFileDirname = 'output/fig-h2scaleup/fig-h2scaleup-D-and-E/'
+outputFileDirname = 'output/fig-h2agitation/fig-h2agitation-B-and-C/'
 ensure_dir(outputFileDirname)
 
 
-scenarioTableFileName = 'input/fig-h2scaleup-D-and-E.csv'
+scenarioTableFileName = 'input/fig-h2agitation-B-and-C.csv'
 
 scenarioDict = ImportScenarioTable(scenarioTableFileName)
 

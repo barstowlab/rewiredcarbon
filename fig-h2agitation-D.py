@@ -1,7 +1,7 @@
 #!/opt/local/bin/python3.7
 
 # ------------------------------------------------------------------------------------------------ #
-# fig-h2scaleup-F.py
+# fig-h2agitation-D.py
 # Calculates stirring power and tank size for hydrogen-transport by agitation
 # 
 # Farshid Salimijazi and Buz Barstow
@@ -22,9 +22,9 @@ Plot_Efficiency_Scattergraphs, Export_Efficiency_Scattergraphs
 # Solar constant in W m^-2
 solarConstant = 1000
 
-outputFileDirname = 'output/fig-h2scaleup/fig-h2scaleup-F/'
+outputFileDirname = 'output/fig-h2agitation/fig-h2agitation-D/'
 
-scenarioTableFileName = 'input/fig-h2scaleup-F.csv'
+scenarioTableFileName = 'input/fig-h2agitation-D.csv'
 
 scenarioDict = ImportScenarioTable(scenarioTableFileName)
 
