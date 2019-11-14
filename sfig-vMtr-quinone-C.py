@@ -1,3 +1,16 @@
+#!/opt/local/bin/python3.7
+
+# ------------------------------------------------------------------------------------------------ #
+# sfig-vMtr-quinone-C.py
+# Calculates how simultaneously changing the Mtr complex and quinone pool redox potential affects 
+# efficiency of electricity to butanol conversion
+# 
+# Farshid Salimijazi and Buz Barstow
+# Last updated by Buz Barstow on 2019-11-13
+# ------------------------------------------------------------------------------------------------ #
+
+
+
 from rewiredcarbon.scenario import ImportScenarioTable, CalculateScenarioEfficiencies, \
 ProcessSingleValueScenario, Plot_Efficiency_Scattergraphs_with_More_than_1_Multi_Value_Variable, \
 Combine_Efficiency_Array_with_More_than_1_Multi_Value_Variable, \

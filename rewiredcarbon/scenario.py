@@ -136,6 +136,7 @@ def ProcessScenario(scenarioData, mode='bargraph', generateZeroErrorsForBargraph
 			generateZeroErrors=generateZeroErrorsForBargraphMode)
 		else:
 			print("Currently only dealing with single-value variable scenarios in bargraph mode.")
+			pdb.set_trace()
 		
 	else:
 		print("Can't yet deal with more than one multi-value variable per scenario.")

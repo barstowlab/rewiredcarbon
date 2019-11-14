@@ -26,6 +26,9 @@ outputFileDirname = 'output/fig-h2agitation/fig-h2agitation-D/'
 
 scenarioTableFileName = 'input/fig-h2agitation-D.csv'
 
+outputFilename_cellDensityAtTargetEfficiencyRatio \
+= outputFileDirname + '/' + 'fig-h2agitation-D-cell_density.csv'
+
 scenarioDict = ImportScenarioTable(scenarioTableFileName)
 
 efficienciesDict = CalculateScenarioEfficiencies(scenarioDict, mode='scattergraph')
@@ -97,9 +100,13 @@ oMatrix_tankAreaRelativeToSolarPVArea)
 keys = collectedOutputDict.keys()
 vectorList_cellDensityAtTargetEfficiencyRatio = []
 headerList_cellDensityAtTargetEfficiencyRatio = []
+
+
 outputFilename_cellDensityAtTargetEfficiencyRatio \
-= outputFileDirname + '/' + 'fig-h2scaleup-E-cell_density.csv'
+= outputFileDirname + '/' + 'fig-h2agitation-D-cell_density.csv'
 ensure_dir(outputFilename_cellDensityAtTargetEfficiencyRatio)
+
+
 
 figure()
 for key in keys:

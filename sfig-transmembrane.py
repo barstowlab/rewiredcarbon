@@ -14,7 +14,6 @@ Plot_Efficiency_Scattergraphs, Export_Efficiency_Scattergraphs
 
 from rewiredcarbon.utils import ensure_dir
 
-import os
 
 
 scenarioTableFileName = 'input/sfig-transmembrane.csv'
