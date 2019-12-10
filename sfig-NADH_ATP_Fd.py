@@ -4,7 +4,7 @@ Plot_Efficiency_Scattergraphs, Export_Efficiency_Scattergraphs
 from rewiredcarbon.utils import ensure_dir
 
 
-scenarioTableFileName = 'input/Scenario Tables/sfig-NADH_ATP_Fd.csv'
+scenarioTableFileName = 'input/sfig-NADH_ATP_Fd.csv'
 outputFileDirname = 'output/sfig-NADH_ATP_Fd'
 outputFilePrefix = 'sfig-NADH_ATP_Fd'
 
