@@ -33,7 +33,7 @@ Plot_Efficiency_Scattergraphs(efficienciesDict, 'effTotalElectricalToFuel')
 
 Plot_Efficiency_Scattergraphs(efficienciesDict, 'protonsPumpedOut')
 
-Plot_Efficiency_Scattergraphs_2(efficienciesDict, 'protonsPumpedOut','effTotalElectricalToFuel')
+# Plot_Efficiency_Scattergraphs_2(efficienciesDict, 'protonsPumpedOut','effTotalElectricalToFuel')
 
 outputFilePrefix = 'eff'
 Export_Efficiency_Scattergraphs(outputFileDirname, outputFilePrefix, efficienciesDict, \

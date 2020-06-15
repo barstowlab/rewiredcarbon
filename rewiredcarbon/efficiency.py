@@ -7,6 +7,8 @@
 # Last Update: 2018-07-26 by Farshid Salimijazi
 # Update: 2019-06-01 by Buz Barstow
 # Update: 2019-06-15 by Buz Barstow
+# Update: 2020-04-17 by Buz Barstow
+# Update: 2020-06-02 by Farshid Salimijazi
 # ------------------------------------------------------------------------------------------------ #
 
 # ------------------------------------------------------------------------------------------------ #
@@ -119,7 +121,8 @@ def Energy_Per_Fuel_Molecule(specificEnergyFuelIn, molecularWeightFuelIn):
 
 # ------------------------------------------------------------------------------------------------ #
 def ProtonPumping_and_Electron_Requirements_for_EET_to_Fuel(vMembrane, vAcceptor, vMtr, vQuinone, \
-deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=-1):
+deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=-1, \
+maxAllowedProtonsPumpedOutPerElectronDown=-1):
 
 	from math import floor, ceil
 	from rewiredcarbon.physicalconstants import elementaryCharge as e
@@ -141,8 +144,22 @@ deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=
 		# Otherwise, you can override this by setting numberOfProtonsPumpedInForATP to a positive
 		# value
 	
-	numberOfProtonsPumpedOutPerElectronDownInEET = floor(abs((vQuinone - vAcceptor) / vMembrane))
+	# Calculate the maximum possible number of protons that could be pumped out by sending an
+	# electron downhill to terminal electron acceptor. 
+	maxPossibleProtonsPumpedOutPerElectronDown = floor(abs((vQuinone - vAcceptor) / vMembrane))
+
+	if maxAllowedProtonsPumpedOutPerElectronDown == -1:
+		numberOfProtonsPumpedOutPerElectronDownInEET = maxPossibleProtonsPumpedOutPerElectronDown
+		# Default behavior
+		# Unlimited protons pumped out per electron. 
 	
+	elif maxPossibleProtonsPumpedOutPerElectronDown > maxAllowedProtonsPumpedOutPerElectronDown:
+		numberOfProtonsPumpedOutPerElectronDownInEET = maxAllowedProtonsPumpedOutPerElectronDown
+	
+	elif maxPossibleProtonsPumpedOutPerElectronDown <= maxAllowedProtonsPumpedOutPerElectronDown:
+		numberOfProtonsPumpedOutPerElectronDownInEET = maxPossibleProtonsPumpedOutPerElectronDown
+		
+		
 	try:
 		electronsDownATPforFuelInEET = (ATPforFuel * numberOfProtonsPumpedInForATP)\
 		/ numberOfProtonsPumpedOutPerElectronDownInEET
@@ -184,13 +201,17 @@ deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=
 	# -------------------------------------------------------------------------------------------- #
 
 
-	return numberOfProtonsPumpedOut, electronsPerFuelInEET
+	return numberOfProtonsPumpedOut, electronsPerFuelInEET, numberOfProtonsPumpedInForATP
 # ------------------------------------------------------------------------------------------------ #
+
+
+
 
 
 # ------------------------------------------------------------------------------------------------ #
 def ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
-deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=-1):
+deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=-1, \
+maxAllowedProtonsPumpedOutPerElectronDown=-1):
 	
 	from rewiredcarbon.electrochemicalconstants import vH2
 	from rewiredcarbon.physicalconstants import elementaryCharge as e
@@ -199,7 +220,6 @@ deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=
 	# Calculate the number of protons that you get pumped outside the membrane to store energy by 
 	# sending one electron downhill.
 	# See Farshid #32
-	numberOfProtonsPumpedOutPerElectronDownInH = floor(abs((vH2 - vAcceptor) / vMembrane))
 	
 	# Calculate the number of electrons the bug has to send downhill to the acceptor
 	# in order to make all of the ATP it needs for one fuel molecule.
@@ -215,6 +235,28 @@ deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=
 		# Otherwise, you can override this by setting numberOfProtonsPumpedInForATP to a positive
 		# value
 	
+	# Calculate the maximum possible number of protons that could be pumped out by sending an
+	# electron downhill to terminal electron acceptor. 
+	maxPossibleProtonsPumpedOutPerElectronDown = floor(abs((vH2 - vAcceptor) / vMembrane))
+
+	if maxAllowedProtonsPumpedOutPerElectronDown == -1:
+		numberOfProtonsPumpedOutPerElectronDownInH = maxPossibleProtonsPumpedOutPerElectronDown
+		# Default behavior
+		# Unlimited protons pumped out per electron. 
+	
+	elif maxPossibleProtonsPumpedOutPerElectronDown > maxAllowedProtonsPumpedOutPerElectronDown:
+		numberOfProtonsPumpedOutPerElectronDownInH = maxAllowedProtonsPumpedOutPerElectronDown
+	
+	elif maxPossibleProtonsPumpedOutPerElectronDown <= maxAllowedProtonsPumpedOutPerElectronDown:
+		numberOfProtonsPumpedOutPerElectronDownInH = maxPossibleProtonsPumpedOutPerElectronDown
+		
+		
+	try:
+		electronsDownATPforFuelInH = (ATPforFuel * numberOfProtonsPumpedInForATP)\
+		/ numberOfProtonsPumpedOutPerElectronDownInH
+	except:
+		pdb.set_trace()
+	
 	electronsPerFuelInH = 2*NADHforFuel + 2*FdForFuel \
 	+ ATPforFuel*(numberOfProtonsPumpedInForATP/numberOfProtonsPumpedOutPerElectronDownInH)
 	
@@ -225,7 +267,7 @@ deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, numberOfProtonsPumpedInForATP=
 	electronsDownATPforFuelInH * numberOfProtonsPumpedOutPerElectronDownInH
 
 	
-	return numberOfProtonsPumpedOut, electronsPerFuelInH
+	return numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP
 # ------------------------------------------------------------------------------------------------ #
 
 
@@ -598,7 +640,7 @@ efficiencyCarbonToSecondCell):
 def Efficiency_Hydrogen_BioCO2_to_Fuel_No_ScaleUp(vRedox, vBias, vMembrane, vAcceptor, \
 NADHforFuel, FdForFuel, ATPforFuel, energyPerFuelMolecule, efficiencyElectronsToHyd=1.0, 
 numberOfProtonsPumpedInForATP=-1, stirPower=0.0, totalElectricalPower=330.0, \
-totalInputPower=1000.0):
+totalInputPower=1000.0, maxAllowedProtonsPumpedOutPerElectronDown=-1):
 # Calculate electrical to hydrogen to fuel efficiency 
 # This is a really simple version where we don't do any scale up calculations beyond considering
 # what the stir power does to efficiency
@@ -606,15 +648,17 @@ totalInputPower=1000.0):
 	from rewiredcarbon.electrochemicalconstants import deltaGADPATP
 	from rewiredcarbon.physicalconstants import elementaryCharge as e
 	import sys
+	import pdb
 	from copy import deepcopy
 
 	# First, calculate proton pumping and electron per fuel molecule requirements. This is 
 	# independent of any scale up considerations. 
 
-	numberOfProtonsPumpedOut, electronsPerFuelInH = \
+	numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
-	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
+	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP, \
+	maxAllowedProtonsPumpedOutPerElectronDown=maxAllowedProtonsPumpedOutPerElectronDown)
 
 	availableElectricalPower = totalElectricalPower - stirPower
 
@@ -627,6 +671,7 @@ totalInputPower=1000.0):
 	
 	efficiencyDict['protonsPumpedOut'] = numberOfProtonsPumpedOut
 	efficiencyDict['electronsPerFuel'] = electronsPerFuelInH
+	efficiencyDict['numberOfProtonsPumpedInForATP'] = numberOfProtonsPumpedInForATP
 	
 	return efficiencyDict
 # ------------------------------------------------------------------------------------------------ #
@@ -650,7 +695,7 @@ totalElectricalPower=330.0, totalInputPower=1000.0, co2FixEnzymeRate=12, co2FixE
 	# First, calculate proton pumping and electron per fuel molecule requirements. This is 
 	# independent of any scale up considerations. 
 
-	numberOfProtonsPumpedOut, electronsPerFuelInH = \
+	numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -677,6 +722,7 @@ totalElectricalPower=330.0, totalInputPower=1000.0, co2FixEnzymeRate=12, co2FixE
 	efficiencyDict['totalCells'] = totalCells
 	efficiencyDict['electronRatePerCell'] = electronRatePerCell
 	efficiencyDict['hydrogenCurrent'] = hydrogenCurrent
+	efficiencyDict['numberOfProtonsPumpedInForATP'] = numberOfProtonsPumpedInForATP
 	
 	return efficiencyDict
 # ------------------------------------------------------------------------------------------------ #
@@ -704,7 +750,7 @@ agitatorDiameterToTankDiameterRatio=0.5):
 	# First, calculate proton pumping and electron per fuel molecule requirements. This is 
 	# independent of any scale up considerations. 
 
-	numberOfProtonsPumpedOut, electronsPerFuelInH = \
+	numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -787,7 +833,7 @@ stirPowerGuessIncrement=1):
 	# First, calculate proton pumping and electron per fuel molecule requirements. This is 
 	# independent of any scale up considerations. 
 
-	numberOfProtonsPumpedOut, electronsPerFuelInH = \
+	numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -863,7 +909,7 @@ numberOfProtonsPumpedInForATP, co2FixEnzymeRate, co2FixEnzymePerCell, cellDensit
 	# First, calculate proton pumping and electron per fuel molecule requirements. This is 
 	# independent of any scale up considerations. 
 
-	numberOfProtonsPumpedOut, electronsPerFuelInH = \
+	numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -925,7 +971,7 @@ numberOfProtonsPumpedInForATP=-1, co2FixEnzymeRate=12, co2FixEnzymePerCell=1e6, 
 	import pdb
 	
 	# Calculate internal cellular parameters that are independent of available power considerations
-	numberOfProtonsPumpedOut, electronsPerFuelInH = \
+	numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1056,7 +1102,7 @@ pressureHydrogen=5000, solubilityHydrogen=1.282e5, diffusionHydrogen=4.5e-9):
 	# First, calculate proton pumping and electron per fuel molecule requirements. This is 
 	# independent of any scale up considerations. 
 
-	numberOfProtonsPumpedOut, electronsPerFuelInH = \
+	numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1146,7 +1192,7 @@ pressureHydrogen=5000, solubilityHydrogen=1.282e5, diffusionHydrogen=4.5e-9):
 	# First, calculate proton pumping and electron per fuel molecule requirements. This is 
 	# independent of any scale up considerations. 
 
-	numberOfProtonsPumpedOut, electronsPerFuelInH = \
+	numberOfProtonsPumpedOut, electronsPerFuelInH, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1188,7 +1234,7 @@ pressureHydrogen=5000, solubilityHydrogen=1.282e5, diffusionHydrogen=4.5e-9):
 def Efficiency_EET_BioCO2_to_Fuel_No_ScaleUp(vRedox, vBias, vMembrane, vAcceptor, vMtr, vQuinone, \
 NADHforFuel, FdForFuel, ATPforFuel, energyPerFuelMolecule, efficiencyElectronsToMtr=1.0, \
 efficiencyElectronsMtrToQuinone=1.0, numberOfProtonsPumpedInForATP=-1, totalElectricalPower=330.0, \
-totalInputPower=1000.0):
+totalInputPower=1000.0, maxAllowedProtonsPumpedOutPerElectronDown=-1):
 
 	from rewiredcarbon.electrochemicalconstants import deltaGADPATP
 	import pdb
@@ -1201,10 +1247,12 @@ totalInputPower=1000.0):
 
 	availableElectricalPower = totalElectricalPower
 	
-	numberOfProtonsPumpedOut, electronsPerFuelInEET = \
-	ProtonPumping_and_Electron_Requirements_for_EET_to_Fuel(vMembrane, vAcceptor, vMtr, vQuinone, \
-	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
-	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
+	numberOfProtonsPumpedOut, electronsPerFuelInEET, numberOfProtonsPumpedInForATP = \
+	ProtonPumping_and_Electron_Requirements_for_EET_to_Fuel(vMembrane, vAcceptor, vMtr, \
+	vQuinone, deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
+	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP, \
+	maxAllowedProtonsPumpedOutPerElectronDown=maxAllowedProtonsPumpedOutPerElectronDown)
+
 	
 	outputDict = \
 	Efficiencies_Current_TotalEnergyContentOfFuel_EET_BioCO2(availableElectricalPower, \
@@ -1215,6 +1263,9 @@ totalInputPower=1000.0):
 
 	efficiencyDict['protonsPumpedOut'] = numberOfProtonsPumpedOut
 	efficiencyDict['electronsPerFuel'] = electronsPerFuelInEET
+	efficiencyDict['numberOfProtonsPumpedInForATP'] = numberOfProtonsPumpedInForATP
+
+
 	
 	return efficiencyDict
 # ------------------------------------------------------------------------------------------------ #
@@ -1239,7 +1290,7 @@ totalInputPower=1000.0, co2FixEnzymeRate=12, co2FixEnzymePerCell=1e6):
 
 	availableElectricalPower = totalElectricalPower
 	
-	numberOfProtonsPumpedOut, electronsPerFuelInEET = \
+	numberOfProtonsPumpedOut, electronsPerFuelInEET, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_EET_to_Fuel(vMembrane, vAcceptor, vMtr, vQuinone, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1262,6 +1313,8 @@ totalInputPower=1000.0, co2FixEnzymeRate=12, co2FixEnzymePerCell=1e6):
 	efficiencyDict['electronRatePerCell'] = electronRatePerCell
 	efficiencyDict['totalCells'] = totalCells
 	efficiencyDict['quinoneCurrent'] = quinoneCurrent
+	efficiencyDict['numberOfProtonsPumpedInForATP'] = numberOfProtonsPumpedInForATP
+
 
 	return efficiencyDict
 # ------------------------------------------------------------------------------------------------ #
@@ -1295,7 +1348,7 @@ co2FixEnzymeRate=12, co2FixEnzymePerCell=1e6):
 
 	availableElectricalPower = totalElectricalPower
 	
-	numberOfProtonsPumpedOut, electronsPerFuelInEET = \
+	numberOfProtonsPumpedOut, electronsPerFuelInEET, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_EET_to_Fuel(vMembrane, vAcceptor, vMtr, vQuinone, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1383,7 +1436,7 @@ co2FixEnzymeRate=12, co2FixEnzymePerCell=1e6):
 
 	availableElectricalPower = totalElectricalPower
 	
-	numberOfProtonsPumpedOut, electronsPerFuelInEET = \
+	numberOfProtonsPumpedOut, electronsPerFuelInEET, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_EET_to_Fuel(vMembrane, vAcceptor, vMtr, vQuinone, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1460,7 +1513,7 @@ stirPower=0.0, efficiencyElectronsToHyd=1.0):
     vCellOne = vRedoxCellOne + vBiasCellOne
     vCellTwo = vRedoxCellTwo + vBiasCellTwo
  
-    numberOfProtonsPumpedOut, electronsToAddInHyd = \
+    numberOfProtonsPumpedOut, electronsToAddInHyd, numberOfProtonsPumpedInForATP = \
     ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
     deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
     numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1499,7 +1552,7 @@ stirPower=0.0, efficiencyElectronsToHyd=1.0):
 	vCellOne = vRedoxCellOne + vBiasCellOne
 	vCellTwo = vRedoxCellTwo + vBiasCellTwo
 
-	numberOfProtonsPumpedOut, electronsToAddInHyd = \
+	numberOfProtonsPumpedOut, electronsToAddInHyd, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_Hydrogen_to_Fuel(vMembrane, vAcceptor, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1552,7 +1605,7 @@ stirPower=0.0, efficiencyElectronsToMtr=1.0, efficiencyElectronsMtrToQuinone=1.0
 	vCellOne = vRedoxCellOne + vBiasCellOne
 	vCellTwo = vRedoxCellTwo + vBiasCellTwo
 
-	numberOfProtonsPumpedOut, electronsToAddInEET = \
+	numberOfProtonsPumpedOut, electronsToAddInEET, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_EET_to_Fuel(vMembrane, vAcceptor, vMtr, vQuinone, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1596,7 +1649,7 @@ totalInputPower=1000.0, stirPower=0.0, primaryFixEnzymeRate=12, primaryFixEnzyme
 	vCellOne = vRedoxCellOne + vBiasCellOne
 	vCellTwo = vRedoxCellTwo + vBiasCellTwo
 
-	numberOfProtonsPumpedOut, electronsToAddInEET = \
+	numberOfProtonsPumpedOut, electronsToAddInEET, numberOfProtonsPumpedInForATP = \
 	ProtonPumping_and_Electron_Requirements_for_EET_to_Fuel(vMembrane, vAcceptor, vMtr, vQuinone, \
 	deltaGADPATP, NADHforFuel, FdForFuel, ATPforFuel, \
 	numberOfProtonsPumpedInForATP=numberOfProtonsPumpedInForATP)
@@ -1648,19 +1701,33 @@ def Process_Hydrogen_with_BioCO2_Scenario(scenarioData):
 		stirPower = float(scenarioData['stirPower'])
 	except:
 		stirPower = 0
+	
+	try:
+		maxAllowedProtonsPumpedOutPerElectronDown \
+		= int(scenarioData['maxAllowedProtonsPumpedOutPerElectronDown'])
+	except:
+		maxAllowedProtonsPumpedOutPerElectronDown =-1
 			
 	vRedox = abs(float(voltageCellTwoCathode) - float(voltageCellTwoAnode))
 	vBias = abs(float(voltageCellTwoCathodeBias) + float(voltageCellTwoAnodeBias))
 	
 	scaleUpMode = scenarioData['scaleUpMode']
 	
-	if scaleUpMode == 'None':
+	if maxAllowedProtonsPumpedOutPerElectronDown != -1:
+		if scaleUpMode.lower() != 'none':
+			print("Can't do restricted proton pumping for any mode other than no scale up " \
+			+ "Set maxAllowedProtonsPumpedOutPerElectronDown = -1 for default " \
+			+ "(unlimited proton pumping) behavior for now.")
+			sys.exit()
+	
+	if scaleUpMode.lower() == 'none':
 		efficiencyDict = \
 		Efficiency_Hydrogen_BioCO2_to_Fuel_No_ScaleUp(vRedox, vBias, vMembrane, \
 		vAcceptor, NADHforFuel, FdForFuel, ATPforFuel, energyPerFuelMolecule, \
 		efficiencyElectronsToHyd=1.0, numberOfProtonsPumpedInForATP=-1, 
 		stirPower=stirPower, totalElectricalPower=totalElectricalPower, \
-		totalInputPower=totalInputPower)
+		totalInputPower=totalInputPower, maxAllowedProtonsPumpedOutPerElectronDown=\
+		maxAllowedProtonsPumpedOutPerElectronDown)
 	
 	elif scaleUpMode == 'Simple':
 		carbonsFixedPerFuel = float(scenarioData['carbonsFixedPerFuel']) 
@@ -1826,10 +1893,23 @@ def Process_EET_with_BioCO2_Scenario(scenarioData):
 	totalElectricalPower = float(scenarioData['totalElectricalPower'])
 	totalInputPower = float(scenarioData['totalInputPower'])
 	
+	try:
+		maxAllowedProtonsPumpedOutPerElectronDown \
+		= int(scenarioData['maxAllowedProtonsPumpedOutPerElectronDown'])
+	except:
+		maxAllowedProtonsPumpedOutPerElectronDown =-1
+	
 	vRedox = abs(float(voltageCellTwoCathode) - float(voltageCellTwoAnode))
 	vBias = abs(float(voltageCellTwoCathodeBias) + float(voltageCellTwoAnodeBias))
 	
 	scaleUpMode = scenarioData['scaleUpMode']
+	
+	if maxAllowedProtonsPumpedOutPerElectronDown != -1:
+		if scaleUpMode.lower() != 'none':
+			print("Can't do restricted proton pumping for any mode other than no scale up " \
+			+ "Set maxAllowedProtonsPumpedOutPerElectronDown = -1 for default " \
+			+ "(unlimited proton pumping) behavior for now.")
+			sys.exit()
 	
 	if scaleUpMode.lower() == 'none':
 		efficiencyDict = \
@@ -1837,7 +1917,8 @@ def Process_EET_with_BioCO2_Scenario(scenarioData):
 		vAcceptor, vMtr, vQuinone, NADHforFuel, FdForFuel, ATPforFuel, energyPerFuelMolecule, \
 		efficiencyElectronsToMtr=1.0, efficiencyElectronsMtrToQuinone=1.0, \
 		numberOfProtonsPumpedInForATP=-1, totalElectricalPower=totalElectricalPower, \
-		totalInputPower=totalInputPower)
+		totalInputPower=totalInputPower, maxAllowedProtonsPumpedOutPerElectronDown=\
+		maxAllowedProtonsPumpedOutPerElectronDown)
 		
 	elif scaleUpMode.lower() == 'simple':
 		carbonsFixedPerFuel = float(scenarioData['carbonsFixedPerFuel']) 
