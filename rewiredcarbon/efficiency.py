@@ -724,6 +724,7 @@ totalElectricalPower=330.0, totalInputPower=1000.0, co2FixEnzymeRate=12, co2FixE
 	efficiencyDict['hydrogenCurrent'] = hydrogenCurrent
 	efficiencyDict['numberOfProtonsPumpedInForATP'] = numberOfProtonsPumpedInForATP
 	
+	
 	return efficiencyDict
 # ------------------------------------------------------------------------------------------------ #
 
@@ -1265,7 +1266,6 @@ totalInputPower=1000.0, maxAllowedProtonsPumpedOutPerElectronDown=-1):
 	efficiencyDict['electronsPerFuel'] = electronsPerFuelInEET
 	efficiencyDict['numberOfProtonsPumpedInForATP'] = numberOfProtonsPumpedInForATP
 
-
 	
 	return efficiencyDict
 # ------------------------------------------------------------------------------------------------ #
@@ -1315,7 +1315,7 @@ totalInputPower=1000.0, co2FixEnzymeRate=12, co2FixEnzymePerCell=1e6):
 	efficiencyDict['quinoneCurrent'] = quinoneCurrent
 	efficiencyDict['numberOfProtonsPumpedInForATP'] = numberOfProtonsPumpedInForATP
 
-
+	
 	return efficiencyDict
 # ------------------------------------------------------------------------------------------------ #
 
